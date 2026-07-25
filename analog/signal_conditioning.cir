@@ -1,0 +1,30 @@
+* Analog Signal Conditioning Front End
+V1 n1  0   SINE(0 5m 1k)  AC 1
+V2 inp n1  SINE(0 3m 50k)
+V33 v33 0 DC 3.3
+
+E1 o1 0 inp a 1e6
+E2 o2 0 0   b 1e6
+Rg  a  b  1k
+R1  o1 a  10k
+R2  o2 b  10k
+
+R3  o1 m   1k
+R4  m  o3  10k
+R5  o2 p   1k
+R6  p  0   10k
+E3 o3 0 p m 1e6
+
+R7  o3 x    22k
+R8  x  y    22k
+C2  y  0    1n
+C1  x  lpf  2n
+E4 lpf 0 y lpf 1e6
+
+Cc   lpf adc 1u
+Rb1  v33 adc 10k
+Rb2  adc 0   10k
+
+;.ac dec 100 1 1Meg
+.tran 0 5m 0 1u
+.end
