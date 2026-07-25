@@ -1,0 +1,7 @@
+*.mat
+*.vcd
+*.raw
+*.log
+venv/
+__pycache__/
+.ipynb_checkpoints/
