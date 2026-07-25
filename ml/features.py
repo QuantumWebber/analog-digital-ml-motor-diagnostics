@@ -16,12 +16,11 @@ BEARING_MULTIPLIERS = {
     "bsf":  4.7135,   
     "ftf":  0.3983,   
 }
-
 FILES = {
-    "healthy":    "data/Time_Normal_1_098.mat",
-    "inner_race": "data/IR007_1_110.mat",
-    "ball":       "data/B007_1_123.mat",
-    "outer_race": "data/OR007_6_1_136.mat",
+    "healthy":    ["data/Time_Normal_1_098.mat"],
+    "inner_race": ["data/IR007_1_110.mat", "data/IR014_1_175.mat", "data/IR021_1_214.mat"],
+    "ball":       ["data/B007_1_123.mat", "data/B014_1_190.mat", "data/B021_1_227.mat"],
+    "outer_race": ["data/OR007_6_1_136.mat", "data/OR014_6_1_202.mat", "data/OR021_6_1_239.mat"],
 }
 
 
@@ -119,20 +118,17 @@ def envelope_features(x, rpm, fs=FS, tol=3.0):
 
 def build_feature_table(files=FILES):
     rows = []
-
-    for label, path in files.items():
-        signal, rpm = load_recording(path)
-        windows = make_windows(signal)
-        print(f"{label:12s} {len(signal):7d} samples  ->  {len(windows):4d} windows  "
-              f"({rpm:.0f} RPM)")
-
-        for i, w in enumerate(windows):
-            row = {"label": label, "source_file": path, "window_index": i}
-            row.update(time_features(w))
-            row.update(freq_features(w))
-            row.update(envelope_features(w, rpm))
-            rows.append(row)
-
+    for label, paths in files.items():
+        for path in paths:
+            signal, rpm = load_recording(path)
+            windows = make_windows(signal)
+            print(f"{label:12s} {path:30s} -> {len(windows):4d} windows ({rpm:.0f} RPM)")
+            for i, w in enumerate(windows):
+                row = {"label": label, "source_file": path, "window_index": i}
+                row.update(time_features(w))
+                row.update(freq_features(w))
+                row.update(envelope_features(w, rpm))
+                rows.append(row)
     return pd.DataFrame(rows)
 
 
